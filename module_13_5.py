@@ -5,7 +5,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-api = ''
+api = '7870564777:AAEkG0TIKMmXlIdFNVP9_RsfFVbCA8dlOB8'
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
@@ -14,16 +14,23 @@ class UserState(StatesGroup):
     growth = State()
     weight = State()
 
-kb = ReplyKeyboardMarkup()
+kb = ReplyKeyboardMarkup(resize_keyboard=True)
 bc = KeyboardButton(text="Рассчитать")
-kb.add(bc)
+bi = KeyboardButton(text="Информация")
+kb.add(bc, bi)
+
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
     await message.answer("Привет! Я бот, помогающий твоему здоровью. \n\n"
                          "Расчитываю по упрощенной формуле Миффлина-Сан Жеора \n"
                          "приблизительную норму калорий для женщин \n\n"
+                         "Для получения информации нажмите кнопку 'Информация' \n"
+                         "Для расчета нормы колорий нажмите кнопку 'Рассчитать'", reply_markup=kb)
+@dp.message_handler(text='Информация')
+async def set_age(message: types.Message):
+    await message.answer("Упрощенная формула Миффлина-Сан Жеора ддя женщин \n"
+                         "выглядит так:  10 x вес (кг) + 6,25 x рост (см) – 5 x возраст (г) – 161.\n\n"
                          "Нажмите кнопку 'Рассчитать', чтобы начать расчет.", reply_markup=kb)
-
 @dp.message_handler(text='Рассчитать')
 async def set_age(message: types.Message):
     await message.answer("Введите свой возраст:")
